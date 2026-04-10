@@ -7,11 +7,15 @@ RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including Rust (needed for base2048)
 RUN apt-get update && apt-get install -y \
     build-essential unixodbc-dev gcc g++ \
     libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 \
+    curl \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
     && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/root/.cargo/bin:$PATH"
 
 # Copy dependency metadata and install
 COPY pyproject.toml uv.lock ./
